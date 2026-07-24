@@ -34,6 +34,7 @@ self.addEventListener('activate', (event) => {
 // Fetch Event - Network First with Cache Fallback
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+  if (!event.request.url.startsWith('http://') && !event.request.url.startsWith('https://')) return;
 
   event.respondWith(
     fetch(event.request)
