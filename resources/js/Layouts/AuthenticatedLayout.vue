@@ -341,10 +341,11 @@ const logout = () => {
                         v-if="canInstallPwa"
                         @click="installPwa"
                         type="button"
-                        class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-accent-500 to-accent-600 text-white text-xs font-bold shadow-md shadow-accent-600/20 hover:scale-[1.02] transition-all cursor-pointer animate-pulse"
+                        class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-surface-700 dark:text-surface-200 text-xs font-medium hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors cursor-pointer"
+                        title="Install aplikasi ke HP / Mobile"
                     >
-                        <i class="fa-solid fa-mobile-screen-button"></i>
-                        <span class="hidden sm:inline">Install Ke HP</span>
+                        <i class="fa-solid fa-mobile-screen-button text-primary-600 dark:text-primary-400"></i>
+                        <span class="hidden sm:inline">Install Aplikasi Mobile</span>
                     </button>
 
                     <!-- Dark / Light Mode Toggle Button -->

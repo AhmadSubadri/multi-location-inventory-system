@@ -98,10 +98,11 @@ const toggleDarkMode = () => {
                 v-if="canInstallPwa"
                 @click="installPwa"
                 type="button"
-                class="flex items-center gap-2 px-3.5 py-2 rounded-full bg-gradient-to-r from-accent-500 to-accent-600 text-white text-xs font-extrabold shadow-xl hover:scale-105 transition-all cursor-pointer animate-bounce"
+                class="flex items-center gap-2 px-3.5 py-2 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md text-white text-xs font-semibold border border-white/20 transition-all cursor-pointer shadow-lg"
+                title="Install aplikasi ke HP / Mobile"
             >
-                <i class="fa-solid fa-mobile-screen-button text-sm"></i>
-                <span>Install App ke HP</span>
+                <i class="fa-solid fa-mobile-screen-button text-primary-300 text-sm"></i>
+                <span>Install Aplikasi Mobile</span>
             </button>
 
             <!-- Dark Mode Toggle -->

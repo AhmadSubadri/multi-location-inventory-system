@@ -25,6 +25,33 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserGuideController;
 use Illuminate\Support\Facades\Route;
 
+// Dynamic PWA Manifest Route
+Route::get('/manifest.json', function () {
+    $company = \App\Models\CompanyProfile::first();
+    $name = $company?->name ? $company->name : 'Agro POS & Inventory';
+    $shortName = $company?->name ? \Illuminate\Support\Str::limit($company->name, 15, '') : 'AgroPOS';
+    $logoUrl = $company?->logo_url ? $company->logo_url : asset('favicon.ico');
+
+    return response()->json([
+        'name' => $name,
+        'short_name' => $shortName,
+        'start_url' => '/',
+        'display' => 'standalone',
+        'background_color' => '#0f172a',
+        'theme_color' => '#0f172a',
+        'orientation' => 'portrait-primary',
+        'description' => "Sistem Informasi Manajemen Inventory {$name}",
+        'icons' => [
+            [
+                'src' => $logoUrl,
+                'sizes' => '192x192 512x512',
+                'type' => 'image/png',
+                'purpose' => 'any maskable'
+            ]
+        ]
+    ]);
+});
+
 // =====================
 // AUTH ROUTES
 // =====================
