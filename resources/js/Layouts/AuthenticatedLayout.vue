@@ -1,7 +1,7 @@
 <script setup>
 import FlashMessages from '@/Components/FlashMessages.vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 
 const page = usePage();
 const auth = computed(() => page.props.auth || {});
@@ -12,6 +12,24 @@ const sidebarOpen = ref(false);
 const userDropdownOpen = ref(false);
 const locationDropdownOpen = ref(false);
 const isDark = ref(false);
+
+// Dynamic Favicon Watcher
+watch(
+    () => company.value?.logo_url,
+    (newLogo) => {
+        if (newLogo && typeof document !== 'undefined') {
+            let favicon = document.getElementById('dynamic-favicon');
+            if (!favicon) {
+                favicon = document.createElement('link');
+                favicon.id = 'dynamic-favicon';
+                favicon.rel = 'icon';
+                document.head.appendChild(favicon);
+            }
+            favicon.href = newLogo;
+        }
+    },
+    { immediate: true }
+);
 
 // Initialize & toggle Dark Mode
 onMounted(() => {

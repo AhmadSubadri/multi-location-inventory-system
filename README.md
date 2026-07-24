@@ -153,4 +153,4 @@ inventory-system/
 
 ## 📄 Lisensi & Hak Cipta
 
-Dikembangkan untuk Perusahaan Distribusi & Retail Sarana Pertanian. Hak Cipta &copy; {{ YEAR }} All Rights Reserved.
+Dikembangkan untuk Perusahaan Distribusi & Retail Sarana Pertanian. Hak Cipta &copy; {{ 2026 }} All Rights Reserved. CV ASDEV Solusi Teknologi.

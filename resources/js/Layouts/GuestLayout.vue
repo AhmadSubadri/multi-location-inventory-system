@@ -1,9 +1,27 @@
 <script setup>
 import { usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 
 const page = usePage();
 const company = computed(() => page.props.company || {});
+
+// Dynamic Favicon Watcher
+watch(
+    () => company.value?.logo_url,
+    (newLogo) => {
+        if (newLogo && typeof document !== 'undefined') {
+            let favicon = document.getElementById('dynamic-favicon');
+            if (!favicon) {
+                favicon = document.createElement('link');
+                favicon.id = 'dynamic-favicon';
+                favicon.rel = 'icon';
+                document.head.appendChild(favicon);
+            }
+            favicon.href = newLogo;
+        }
+    },
+    { immediate: true }
+);
 </script>
 
 <template>

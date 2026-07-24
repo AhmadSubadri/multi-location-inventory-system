@@ -3,7 +3,17 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title inertia>{{ config('app.name', 'Inventory System') }}</title>
+
+    @php
+        $company = \App\Models\CompanyProfile::first();
+        $faviconUrl = $company?->logo_url ? $company->logo_url : asset('favicon.ico');
+    @endphp
+
+    <title inertia>{{ $company?->name ?? config('app.name', 'Inventory System') }}</title>
+
+    <!-- Dynamic Favicon -->
+    <link rel="icon" id="dynamic-favicon" href="{{ $faviconUrl }}">
+    <link rel="shortcut icon" href="{{ $faviconUrl }}">
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
