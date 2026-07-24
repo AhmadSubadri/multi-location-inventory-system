@@ -70,6 +70,7 @@ class HandleInertiaRequests extends Middleware
 
         return [
             ...parent::share($request),
+            'app_version' => 'v1.2.0 Enterprise',
             'auth' => $authData,
             'company' => fn() => CompanyProfile::first(),
             'settings' => fn() => [

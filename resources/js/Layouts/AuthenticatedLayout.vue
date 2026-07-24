@@ -7,11 +7,34 @@ const page = usePage();
 const auth = computed(() => page.props.auth || {});
 const user = computed(() => auth.value.user || {});
 const company = computed(() => page.props.company || {});
+const appVersion = computed(() => page.props.app_version || 'v1.2.0 Enterprise');
 
 const sidebarOpen = ref(false);
 const userDropdownOpen = ref(false);
 const locationDropdownOpen = ref(false);
 const isDark = ref(false);
+
+// PWA Install Prompt State
+const deferredPrompt = ref(null);
+const canInstallPwa = ref(false);
+
+onMounted(() => {
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt.value = e;
+        canInstallPwa.value = true;
+    });
+});
+
+const installPwa = async () => {
+    if (!deferredPrompt.value) return;
+    deferredPrompt.value.prompt();
+    const { outcome } = await deferredPrompt.value.userChoice;
+    if (outcome === 'accepted') {
+        canInstallPwa.value = false;
+    }
+    deferredPrompt.value = null;
+};
 
 // Dynamic Favicon Watcher
 watch(
@@ -192,7 +215,7 @@ const logout = () => {
                         <h2 class="font-extrabold text-sm tracking-tight text-white leading-none">
                             {{ company.name || 'AgroSarana Tani' }}
                         </h2>
-                        <span class="text-[10px] text-surface-400 font-medium tracking-wide uppercase">Inventory System</span>
+                        <span class="text-[10px] text-primary-400 font-semibold tracking-wide uppercase">{{ appVersion }}</span>
                     </div>
                 </Link>
                 <button
@@ -270,7 +293,7 @@ const logout = () => {
                 </template>
             </nav>
 
-            <!-- User Footer in Sidebar with ASDEV Branding -->
+            <!-- User Footer in Sidebar with ASDEV Branding & App Version -->
             <div class="p-3 border-t border-surface-800 bg-surface-950/40">
                 <div class="flex items-center gap-3 px-2 py-1.5">
                     <div class="w-9 h-9 rounded-full bg-primary-600 text-white flex items-center justify-center font-bold text-sm shrink-0">
@@ -281,9 +304,12 @@ const logout = () => {
                         <p class="text-[10px] text-surface-400 truncate">{{ user.roles?.[0] || 'User' }}</p>
                     </div>
                 </div>
-                <div class="mt-2 text-[10px] text-center text-surface-400 border-t border-surface-800/60 pt-2 font-medium flex items-center justify-center gap-1">
-                    <i class="fa-solid fa-shield-halved text-accent-400"></i>
-                    <span>Supported by <strong class="text-primary-300 font-bold">ASDEV Digital Solution</strong></span>
+                <div class="mt-2 text-[10px] text-center text-surface-400 border-t border-surface-800/60 pt-2 font-medium flex flex-col gap-0.5">
+                    <div class="flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-shield-halved text-accent-400"></i>
+                        <span>Supported by <strong class="text-primary-300 font-bold">ASDEV Digital Solution</strong></span>
+                    </div>
+                    <div class="text-[9px] text-surface-500 font-mono">{{ appVersion }}</div>
                 </div>
             </div>
         </aside>
@@ -303,10 +329,24 @@ const logout = () => {
                     <span class="text-xs font-semibold text-surface-500 dark:text-surface-400 hidden sm:inline-block">
                         {{ company.name }} — POS & Inventory System
                     </span>
+                    <span class="hidden md:inline-block px-2 py-0.5 rounded-full bg-primary-50 dark:bg-primary-950 text-primary-700 dark:text-primary-300 font-mono text-[10px] font-bold border border-primary-200 dark:border-primary-800">
+                        {{ appVersion }}
+                    </span>
                 </div>
 
-                <!-- Right: Dark Mode Toggle, Location Switcher & User Profile -->
+                <!-- Right: PWA Install Button, Dark Mode Toggle, Location Switcher & User Profile -->
                 <div class="flex items-center gap-2 sm:gap-3">
+                    <!-- PWA Install Button (Shown if browser supports installation) -->
+                    <button
+                        v-if="canInstallPwa"
+                        @click="installPwa"
+                        type="button"
+                        class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-accent-500 to-accent-600 text-white text-xs font-bold shadow-md shadow-accent-600/20 hover:scale-[1.02] transition-all cursor-pointer animate-pulse"
+                    >
+                        <i class="fa-solid fa-mobile-screen-button"></i>
+                        <span class="hidden sm:inline">Install Ke HP</span>
+                    </button>
+
                     <!-- Dark / Light Mode Toggle Button -->
                     <button
                         @click="toggleDarkMode"
@@ -406,10 +446,11 @@ const logout = () => {
                     <slot />
                 </div>
 
-                <!-- Global System Footer with ASDEV Digital Solution Branding -->
+                <!-- Global System Footer with ASDEV Digital Solution Branding & App Version -->
                 <footer class="mt-12 border-t border-surface-200 dark:border-surface-800/80 pt-4 pb-2 text-[11px] text-surface-500 dark:text-surface-400 flex flex-col sm:flex-row items-center justify-between gap-2">
-                    <div>
-                        &copy; {{ new Date().getFullYear() }} <span class="font-semibold text-surface-700 dark:text-surface-200">{{ company.name || 'Agro Inventory' }}</span>. All rights reserved.
+                    <div class="flex items-center gap-2">
+                        <span>&copy; {{ new Date().getFullYear() }} <strong class="font-semibold text-surface-700 dark:text-surface-200">{{ company.name || 'Agro Inventory' }}</strong>. All rights reserved.</span>
+                        <span class="px-2 py-0.5 rounded bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-300 font-mono text-[10px] font-bold">{{ appVersion }}</span>
                     </div>
                     <div class="flex items-center gap-1.5 font-medium">
                         <i class="fa-solid fa-laptop-code text-primary-500"></i>

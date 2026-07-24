@@ -4,8 +4,31 @@ import { computed, onMounted, ref, watch } from 'vue';
 
 const page = usePage();
 const company = computed(() => page.props.company || {});
+const appVersion = computed(() => page.props.app_version || 'v1.2.0 Enterprise');
 
 const isDark = ref(false);
+
+// PWA Install Prompt State
+const deferredPrompt = ref(null);
+const canInstallPwa = ref(false);
+
+onMounted(() => {
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt.value = e;
+        canInstallPwa.value = true;
+    });
+});
+
+const installPwa = async () => {
+    if (!deferredPrompt.value) return;
+    deferredPrompt.value.prompt();
+    const { outcome } = await deferredPrompt.value.userChoice;
+    if (outcome === 'accepted') {
+        canInstallPwa.value = false;
+    }
+    deferredPrompt.value = null;
+};
 
 // Default high-res agricultural background if none uploaded
 const defaultBgUrl = 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1920&auto=format&fit=crop';
@@ -70,6 +93,18 @@ const toggleDarkMode = () => {
 
         <!-- Top Navigation Bar for Login Screen -->
         <header class="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 flex items-center gap-3">
+            <!-- PWA Install Button -->
+            <button
+                v-if="canInstallPwa"
+                @click="installPwa"
+                type="button"
+                class="flex items-center gap-2 px-3.5 py-2 rounded-full bg-gradient-to-r from-accent-500 to-accent-600 text-white text-xs font-extrabold shadow-xl hover:scale-105 transition-all cursor-pointer animate-bounce"
+            >
+                <i class="fa-solid fa-mobile-screen-button text-sm"></i>
+                <span>Install App ke HP</span>
+            </button>
+
+            <!-- Dark Mode Toggle -->
             <button
                 @click="toggleDarkMode"
                 type="button"
@@ -86,7 +121,7 @@ const toggleDarkMode = () => {
             <!-- Left Side: Brand & Feature Showcase (Hidden on Mobile) -->
             <div class="lg:col-span-6 p-8 sm:p-10 lg:p-12 flex flex-col justify-between bg-gradient-to-b from-primary-950/40 via-surface-950/50 to-surface-950/80 text-white border-b lg:border-b-0 lg:border-r border-white/10 relative">
                 <div>
-                    <!-- Dynamic Logo -->
+                    <!-- Dynamic Logo & Version Badge -->
                     <div class="flex items-center gap-3 mb-8">
                         <div v-if="company.logo_url" class="w-14 h-14 rounded-2xl bg-white p-1.5 shadow-xl ring-2 ring-white/20 overflow-hidden shrink-0">
                             <img :src="company.logo_url" class="w-full h-full object-contain" alt="Logo Perusahaan" />
@@ -95,9 +130,14 @@ const toggleDarkMode = () => {
                             <i class="fa-solid fa-wheat-awn"></i>
                         </div>
                         <div>
-                            <h2 class="text-xl font-black tracking-tight text-white leading-tight">
-                                {{ company.name || 'PT Agro Sarana Tani' }}
-                            </h2>
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-xl font-black tracking-tight text-white leading-tight">
+                                    {{ company.name || 'PT Agro Sarana Tani' }}
+                                </h2>
+                                <span class="px-2 py-0.5 rounded bg-primary-500/30 text-primary-300 font-mono text-[10px] font-bold border border-primary-400/30">
+                                    {{ appVersion }}
+                                </span>
+                            </div>
                             <p class="text-xs text-primary-300 font-medium tracking-wide">
                                 {{ company.tagline || 'Sistem Distribusi & Inventory' }}
                             </p>
@@ -155,9 +195,12 @@ const toggleDarkMode = () => {
                     <slot />
                 </div>
 
-                <div class="mt-6 pt-4 border-t border-surface-200 dark:border-surface-800/80 text-[11px] text-center text-surface-500 dark:text-surface-400 font-medium flex items-center justify-center gap-1.5">
-                    <i class="fa-solid fa-shield-halved text-primary-500"></i>
-                    <span>Supported & Developed by <strong class="text-primary-600 dark:text-primary-400 font-bold">ASDEV Digital Solution</strong></span>
+                <div class="mt-6 pt-4 border-t border-surface-200 dark:border-surface-800/80 text-[11px] text-center text-surface-500 dark:text-surface-400 font-medium flex flex-col items-center gap-1">
+                    <div class="flex items-center gap-1.5">
+                        <i class="fa-solid fa-shield-halved text-primary-500"></i>
+                        <span>Supported & Developed by <strong class="text-primary-600 dark:text-primary-400 font-bold">ASDEV Digital Solution</strong></span>
+                    </div>
+                    <div class="text-[10px] text-surface-400 font-mono">{{ appVersion }}</div>
                 </div>
             </div>
         </div>
