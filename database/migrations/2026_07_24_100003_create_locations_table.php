@@ -1,0 +1,32 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('locations', function (Blueprint $table) {
+            $table->id();
+            $table->string('code', 20)->unique();
+            $table->string('name');
+            $table->enum('type', ['warehouse', 'store']);
+            $table->boolean('is_main_source')->default(false);
+            $table->text('address')->nullable();
+            $table->string('phone', 30)->nullable();
+            $table->string('pic_name')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
+            $table->softDeletes();
+
+            $table->index(['type', 'is_active']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('locations');
+    }
+};
