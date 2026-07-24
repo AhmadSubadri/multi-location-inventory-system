@@ -270,7 +270,7 @@ const logout = () => {
                 </template>
             </nav>
 
-            <!-- User Footer in Sidebar -->
+            <!-- User Footer in Sidebar with ASDEV Branding -->
             <div class="p-3 border-t border-surface-800 bg-surface-950/40">
                 <div class="flex items-center gap-3 px-2 py-1.5">
                     <div class="w-9 h-9 rounded-full bg-primary-600 text-white flex items-center justify-center font-bold text-sm shrink-0">
@@ -280,6 +280,10 @@ const logout = () => {
                         <p class="text-xs font-semibold text-white truncate">{{ user.name }}</p>
                         <p class="text-[10px] text-surface-400 truncate">{{ user.roles?.[0] || 'User' }}</p>
                     </div>
+                </div>
+                <div class="mt-2 text-[10px] text-center text-surface-400 border-t border-surface-800/60 pt-2 font-medium flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-shield-halved text-accent-400"></i>
+                    <span>Supported by <strong class="text-primary-300 font-bold">ASDEV Digital Solution</strong></span>
                 </div>
             </div>
         </aside>
@@ -397,8 +401,21 @@ const logout = () => {
             <FlashMessages />
 
             <!-- Page Main Dynamic Content View -->
-            <main class="flex-1 p-4 sm:p-6 lg:p-8">
-                <slot />
+            <main class="flex-1 p-4 sm:p-6 lg:p-8 flex flex-col justify-between">
+                <div>
+                    <slot />
+                </div>
+
+                <!-- Global System Footer with ASDEV Digital Solution Branding -->
+                <footer class="mt-12 border-t border-surface-200 dark:border-surface-800/80 pt-4 pb-2 text-[11px] text-surface-500 dark:text-surface-400 flex flex-col sm:flex-row items-center justify-between gap-2">
+                    <div>
+                        &copy; {{ new Date().getFullYear() }} <span class="font-semibold text-surface-700 dark:text-surface-200">{{ company.name || 'Agro Inventory' }}</span>. All rights reserved.
+                    </div>
+                    <div class="flex items-center gap-1.5 font-medium">
+                        <i class="fa-solid fa-laptop-code text-primary-500"></i>
+                        <span>Supported & Developed by <strong class="text-primary-600 dark:text-primary-400 font-bold">ASDEV Digital Solution</strong></span>
+                    </div>
+                </footer>
             </main>
         </div>
     </div>

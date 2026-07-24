@@ -140,16 +140,25 @@ const toggleDarkMode = () => {
                     </div>
                 </div>
 
-                <!-- Footer copyright -->
-                <div class="mt-8 pt-6 border-t border-white/10 text-[11px] text-surface-400 flex items-center justify-between">
+                <!-- Footer copyright & ASDEV Branding -->
+                <div class="mt-8 pt-6 border-t border-white/10 text-[11px] text-surface-400 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                     <span>&copy; {{ new Date().getFullYear() }} {{ company.name || 'Agro Inventory' }}</span>
-                    <span>v2.5 Enterprise</span>
+                    <span class="text-surface-300 font-medium flex items-center gap-1">
+                        <i class="fa-solid fa-laptop-code text-primary-400"></i> Supported by <strong class="text-white font-bold">ASDEV Digital Solution</strong>
+                    </span>
                 </div>
             </div>
 
-            <!-- Right Side: Login Form Card -->
-            <div class="lg:col-span-6 p-6 sm:p-10 flex flex-col justify-center bg-white/95 dark:bg-surface-900/95 backdrop-blur-xl transition-colors">
-                <slot />
+            <!-- Right Side: Login Form Card with Footer Branding -->
+            <div class="lg:col-span-6 p-6 sm:p-10 flex flex-col justify-between bg-white/95 dark:bg-surface-900/95 backdrop-blur-xl transition-colors">
+                <div>
+                    <slot />
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-surface-200 dark:border-surface-800/80 text-[11px] text-center text-surface-500 dark:text-surface-400 font-medium flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-shield-halved text-primary-500"></i>
+                    <span>Supported & Developed by <strong class="text-primary-600 dark:text-primary-400 font-bold">ASDEV Digital Solution</strong></span>
+                </div>
             </div>
         </div>
     </div>
