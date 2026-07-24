@@ -33,6 +33,7 @@ class CompanyProfileController extends Controller
             'currency_symbol' => ['required', 'string', 'max:10'],
             'currency_code' => ['required', 'string', 'max:10'],
             'logo' => ['nullable', 'image', 'mimes:png,jpg,jpeg,svg,webp', 'max:2048'],
+            'login_bg' => ['nullable', 'image', 'mimes:png,jpg,jpeg,svg,webp', 'max:5120'],
         ]);
 
         $company = CompanyProfile::first();
@@ -42,6 +43,7 @@ class CompanyProfileController extends Controller
 
         $oldValues = $company->toArray();
 
+        // Handle Logo Upload
         if ($request->hasFile('logo')) {
             if ($company->logo_path && Storage::disk('public')->exists($company->logo_path)) {
                 Storage::disk('public')->delete($company->logo_path);
@@ -51,7 +53,17 @@ class CompanyProfileController extends Controller
             $validated['logo_path'] = $path;
         }
 
-        unset($validated['logo']);
+        // Handle Login Background Upload
+        if ($request->hasFile('login_bg')) {
+            if ($company->login_bg_path && Storage::disk('public')->exists($company->login_bg_path)) {
+                Storage::disk('public')->delete($company->login_bg_path);
+            }
+
+            $bgPath = $request->file('login_bg')->store('company', 'public');
+            $validated['login_bg_path'] = $bgPath;
+        }
+
+        unset($validated['logo'], $validated['login_bg']);
         $company->fill($validated);
         $company->save();
 
@@ -61,9 +73,9 @@ class CompanyProfileController extends Controller
             subjectId: $company->id,
             oldValues: $oldValues,
             newValues: $company->toArray(),
-            description: "Memperbarui profil & logo perusahaan: {$company->name}"
+            description: "Memperbarui profil, logo & background login perusahaan: {$company->name}"
         );
 
-        return back()->with('success', 'Profil & Logo Perusahaan berhasil diperbarui.');
+        return back()->with('success', 'Profil, Logo & Gambar Latar Login berhasil diperbarui.');
     }
 }

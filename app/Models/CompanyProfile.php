@@ -10,6 +10,7 @@ class CompanyProfile extends Model
         'name',
         'tagline',
         'logo_path',
+        'login_bg_path',
         'address',
         'phone',
         'email',
@@ -19,7 +20,7 @@ class CompanyProfile extends Model
         'currency_code',
     ];
 
-    protected $appends = ['logo_url'];
+    protected $appends = ['logo_url', 'login_bg_url'];
 
     protected function casts(): array
     {
@@ -38,5 +39,17 @@ class CompanyProfile extends Model
         }
 
         return asset('storage/' . $this->logo_path);
+    }
+
+    /**
+     * Get the login background image URL.
+     */
+    public function getLoginBgUrlAttribute(): ?string
+    {
+        if (!$this->login_bg_path) {
+            return null;
+        }
+
+        return asset('storage/' . $this->login_bg_path);
     }
 }

@@ -1,12 +1,21 @@
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
+
+const page = usePage();
+const company = computed(() => page.props.company || {});
 
 const form = useForm({
     email: '',
     password: '',
     remember: false,
 });
+
+const fillCredential = (email) => {
+    form.email = email;
+    form.password = 'password';
+};
 
 const submit = () => {
     form.post(route('login.store'), {
@@ -19,10 +28,26 @@ const submit = () => {
     <GuestLayout>
         <Head title="Masuk ke Sistem" />
 
+        <!-- Mobile Header with Dynamic Logo (visible on small screens) -->
+        <div class="lg:hidden text-center mb-6">
+            <div v-if="company.logo_url" class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white p-2 shadow-lg mb-3 ring-2 ring-primary-500/20">
+                <img :src="company.logo_url" class="w-full h-full object-contain" alt="Logo Perusahaan" />
+            </div>
+            <div v-else class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-primary-600 to-accent-500 text-white shadow-lg mb-3">
+                <i class="fa-solid fa-wheat-awn text-2xl"></i>
+            </div>
+            <h2 class="text-xl font-extrabold text-surface-900 dark:text-white">
+                {{ company.name || 'PT Agro Sarana Tani' }}
+            </h2>
+            <p class="text-xs text-surface-500 dark:text-surface-400 mt-0.5">
+                {{ company.tagline || 'Sistem Informasi Manajemen Inventory & Toko' }}
+            </p>
+        </div>
+
         <div class="mb-6">
-            <h2 class="text-xl font-bold text-surface-900 dark:text-white">Masuk Akun</h2>
+            <h2 class="text-2xl font-extrabold text-surface-900 dark:text-white tracking-tight">Selamat Datang 👋</h2>
             <p class="text-xs text-surface-500 dark:text-surface-400 mt-1">
-                Silakan masukkan email dan kata sandi Anda untuk mengakses dashboard.
+                Silakan masukkan kredensial akun Anda untuk mengakses sistem inventory.
             </p>
         </div>
 
@@ -41,7 +66,7 @@ const submit = () => {
                         required
                         autofocus
                         placeholder="nama@agrosaranatani.co.id"
-                        class="form-input pl-10"
+                        class="form-input pl-10 text-xs sm:text-sm py-2.5"
                         :class="{ 'border-danger-500': form.errors.email }"
                     />
                 </div>
@@ -61,7 +86,7 @@ const submit = () => {
                         type="password"
                         required
                         placeholder="••••••••"
-                        class="form-input pl-10"
+                        class="form-input pl-10 text-xs sm:text-sm py-2.5"
                         :class="{ 'border-danger-500': form.errors.password }"
                     />
                 </div>
@@ -84,7 +109,7 @@ const submit = () => {
             <button
                 type="submit"
                 :disabled="form.processing"
-                class="btn-primary w-full py-3 text-sm font-semibold shadow-lg shadow-primary-600/30 mt-2"
+                class="btn-primary w-full py-3 text-sm font-bold shadow-xl shadow-primary-600/30 mt-2 cursor-pointer transition-all hover:scale-[1.01]"
             >
                 <i v-if="form.processing" class="fa-solid fa-spinner animate-spin"></i>
                 <i v-else class="fa-solid fa-right-to-bracket"></i>
@@ -92,18 +117,46 @@ const submit = () => {
             </button>
         </form>
 
-        <!-- Quick Demo Credentials Hint -->
-        <div class="mt-6 p-3 rounded-xl bg-surface-50 dark:bg-surface-800/60 border border-surface-200 dark:border-surface-700/60 text-xs text-surface-600 dark:text-surface-300">
-            <p class="font-bold mb-1 text-surface-800 dark:text-white flex items-center gap-1.5">
-                <i class="fa-solid fa-key text-warning-500"></i> Akun Demo Seeded:
+        <!-- Quick Demo Credentials Hint (Clickable 1-Tap Fill) -->
+        <div class="mt-6 p-3.5 rounded-2xl bg-surface-50 dark:bg-surface-800/60 border border-surface-200 dark:border-surface-700/60 text-xs">
+            <p class="font-bold text-surface-800 dark:text-white flex items-center justify-between mb-2">
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-bolt text-warning-500"></i> Akun Demo (Klik untuk Isi Automatic):</span>
+                <span class="text-[10px] text-surface-400 font-normal">Pass: password</span>
             </p>
-            <div class="grid grid-cols-2 gap-1 text-[11px] font-mono mt-1">
-                <div><strong>Admin:</strong> admin@agrosaranatani.co.id</div>
-                <div><strong>Owner:</strong> owner@agrosaranatani.co.id</div>
-                <div><strong>Kep.Gudang:</strong> budi@agrosaranatani.co.id</div>
-                <div><strong>Kep.Toko:</strong> sari@agrosaranatani.co.id</div>
+            <div class="grid grid-cols-2 gap-1.5">
+                <button
+                    @click="fillCredential('admin@agrosaranatani.co.id')"
+                    type="button"
+                    class="p-1.5 rounded-lg bg-white dark:bg-surface-700 hover:bg-primary-50 dark:hover:bg-primary-950 text-left border border-surface-200 dark:border-surface-600 transition-colors cursor-pointer"
+                >
+                    <div class="font-bold text-[11px] text-primary-600 dark:text-primary-400">Super Admin</div>
+                    <div class="text-[10px] text-surface-500 truncate">admin@...</div>
+                </button>
+                <button
+                    @click="fillCredential('owner@agrosaranatani.co.id')"
+                    type="button"
+                    class="p-1.5 rounded-lg bg-white dark:bg-surface-700 hover:bg-accent-50 dark:hover:bg-accent-950 text-left border border-surface-200 dark:border-surface-600 transition-colors cursor-pointer"
+                >
+                    <div class="font-bold text-[11px] text-accent-600 dark:text-accent-400">Owner / Direktur</div>
+                    <div class="text-[10px] text-surface-500 truncate">owner@...</div>
+                </button>
+                <button
+                    @click="fillCredential('budi@agrosaranatani.co.id')"
+                    type="button"
+                    class="p-1.5 rounded-lg bg-white dark:bg-surface-700 hover:bg-warning-50 dark:hover:bg-warning-950 text-left border border-surface-200 dark:border-surface-600 transition-colors cursor-pointer"
+                >
+                    <div class="font-bold text-[11px] text-warning-600 dark:text-warning-400">Kepala Gudang</div>
+                    <div class="text-[10px] text-surface-500 truncate">budi@...</div>
+                </button>
+                <button
+                    @click="fillCredential('sari@agrosaranatani.co.id')"
+                    type="button"
+                    class="p-1.5 rounded-lg bg-white dark:bg-surface-700 hover:bg-success-50 dark:hover:bg-success-950 text-left border border-surface-200 dark:border-surface-600 transition-colors cursor-pointer"
+                >
+                    <div class="font-bold text-[11px] text-success-600 dark:text-success-400">Kepala Toko</div>
+                    <div class="text-[10px] text-surface-500 truncate">sari@...</div>
+                </button>
             </div>
-            <p class="text-[10px] text-surface-400 mt-1 italic">Password untuk semua akun: <code>password</code></p>
         </div>
     </GuestLayout>
 </template>

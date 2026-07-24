@@ -8,6 +8,7 @@ const props = defineProps({
 });
 
 const previewLogoUrl = ref(props.company?.logo_url || null);
+const previewLoginBgUrl = ref(props.company?.login_bg_url || null);
 
 const form = useForm({
     name: props.company?.name || '',
@@ -20,13 +21,22 @@ const form = useForm({
     currency_symbol: props.company?.currency_symbol || 'Rp',
     currency_code: props.company?.currency_code || 'IDR',
     logo: null,
+    login_bg: null,
 });
 
-const onFileChange = (e) => {
+const onLogoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
         form.logo = file;
         previewLogoUrl.value = URL.createObjectURL(file);
+    }
+};
+
+const onLoginBgChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        form.login_bg = file;
+        previewLoginBgUrl.value = URL.createObjectURL(file);
     }
 };
 
@@ -43,7 +53,7 @@ const submit = () => {
 
         <div class="mb-6">
             <h1 class="text-2xl font-bold text-surface-900 dark:text-white">Profil & Identitas Perusahaan</h1>
-            <p class="text-xs text-surface-500 mt-1">Data resmi & logo perusahaan yang tercetak pada kop struk, faktur, dan header aplikasi.</p>
+            <p class="text-xs text-surface-500 mt-1">Data resmi, logo, & background login yang tercetak pada kop struk, faktur, dan halaman depan.</p>
         </div>
 
         <div class="max-w-3xl">
@@ -68,11 +78,40 @@ const submit = () => {
                             <input
                                 type="file"
                                 accept="image/png,image/jpeg,image/svg+xml,image/webp"
-                                @change="onFileChange"
+                                @change="onLogoChange"
                                 class="block w-full text-xs text-surface-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 dark:file:bg-primary-950 dark:file:text-primary-300 cursor-pointer"
                             />
-                            <p class="text-[11px] text-surface-400">Format yang didukung: PNG, JPG, SVG, WEBP. Maksimal ukuran 2MB.</p>
+                            <p class="text-[11px] text-surface-400">Format: PNG, JPG, SVG, WEBP. Maksimal ukuran 2MB.</p>
                             <p v-if="form.errors.logo" class="form-error">{{ form.errors.logo }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Login Background Upload Section -->
+                <div class="space-y-4 pt-4 border-t border-surface-200 dark:border-surface-700">
+                    <h3 class="font-bold text-base border-b border-surface-200 dark:border-surface-700 pb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-[#000] fa-panorama text-accent-600"></i> Gambar Background Halaman Login
+                    </h3>
+
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+                        <div class="w-full sm:w-48 h-28 rounded-2xl border-2 border-dashed border-surface-300 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 flex items-center justify-center overflow-hidden shrink-0 relative group">
+                            <img v-if="previewLoginBgUrl" :src="previewLoginBgUrl" class="w-full h-full object-cover" alt="Background Login" />
+                            <div v-else class="text-center text-surface-400 p-2">
+                                <i class="fa-solid fa-mountain-sun text-2xl block mb-1"></i>
+                                <span class="text-[10px]">Default Gradient</span>
+                            </div>
+                        </div>
+
+                        <div class="flex-1 space-y-2 w-full">
+                            <label class="form-label">Unggah Gambar Latar Halaman Login (Contoh: Pemandangan Sawah / Gudang / Pertanian)</label>
+                            <input
+                                type="file"
+                                accept="image/png,image/jpeg,image/webp"
+                                @change="onLoginBgChange"
+                                class="block w-full text-xs text-surface-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-accent-50 file:text-accent-700 hover:file:bg-accent-100 dark:file:bg-accent-950 dark:file:text-accent-300 cursor-pointer"
+                            />
+                            <p class="text-[11px] text-surface-400">Rekomendasi resolusi: 1920x1080px (Format: JPG, PNG, WEBP, Maks 5MB).</p>
+                            <p v-if="form.errors.login_bg" class="form-error">{{ form.errors.login_bg }}</p>
                         </div>
                     </div>
                 </div>
@@ -139,7 +178,7 @@ const submit = () => {
                 <div class="flex items-center justify-end pt-4">
                     <button type="submit" :disabled="form.processing" class="btn-primary">
                         <i v-if="form.processing" class="fa-solid fa-spinner animate-spin"></i>
-                        <span>Simpan Perubahan Profil & Logo</span>
+                        <span>Simpan Perubahan Profil & Gambar Login</span>
                     </button>
                 </div>
             </form>
