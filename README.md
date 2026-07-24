@@ -4,9 +4,12 @@
 [![Vue.js](https://img.shields.io/badge/Vue.js-3.x-4FC08D?style=for-the-badge&logo=vuedotjs&logoColor=white)](https://vuejs.org)
 [![Inertia.js](https://img.shields.io/badge/Inertia.js-Modern-9553E9?style=for-the-badge&logo=inertia&logoColor=white)](https://inertiajs.com)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4.0-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
-[![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://mysql.com)
+[![PWA Ready](https://img.shields.io/badge/PWA-Ready-059669?style=for-the-badge&logo=pwa&logoColor=white)](https://web.dev/progressive-web-apps/)
+[![Version](https://img.shields.io/badge/Version-v1.2.0_Enterprise-blue?style=for-the-badge)](https://github.com/AhmadSubadri/multi-location-inventory-system)
 
 **Sistem Informasi Manajemen Inventory & Mutasi Stok Multi-Gudang & Multi-Toko** berbasis web yang dirancang khusus untuk distribusi dan retail sarana pertanian (pupuk, pestisida, herbisida, alat pertanian) serta siap diadaptasi untuk bisnis retail/gudang umum.
+
+> **Supported & Developed by ASDEV Digital Solution**
 
 ---
 
@@ -24,14 +27,19 @@
 - Seluruh mutasi barang (masuk, keluar, transfer, retur, penyesuaian opname) dicatat secara **immutable** pada tabel `stock_ledgers`.
 - Mencegah manipulasi angka stok dan memberikan histori mutasi kronologis yang transparan.
 
-### 🚚 4. Operasional Mutasi Barang Lengkap
+### 📱 4. Dukungan PWA (Progressive Web App - Install ke HP)
+- PWA Manifest (`/manifest.json`) dinamis yang menyesuaikan Nama & Logo Resmi Perusahaan.
+- Ikon tombol **"Install Aplikasi Mobile"** yang sangat bersih dan elegan untuk dipasang langsung ke layar utama (*Home Screen*) HP/Mobile stakeholder tanpa perlu via PlayStore.
+- Offline Service Worker (`/sw.js`) untuk performa jaringan yang cepat & stabil.
+
+### 🚚 5. Operasional Mutasi Barang Lengkap
 - **Penerimaan Barang (Goods Receipt)** dari Supplier ke Gudang Utama.
 - **Transfer Stok** Gudang → Toko (dan opsional Toko ↔ Toko) dengan validasi *Stok Dilarang Minus*.
 - **Pencatatan Penjualan Toko** dengan pemilihan **Harga Grosir Otomatis** berdasarkan kuantitas beli.
 - **Retur Barang** 3 Arah (*Customer → Toko*, *Toko → Gudang*, *Gudang → Supplier*).
 - **Stok Opname** dengan penghitungan selisih otomatis & penyesuaian ledger.
 
-### 📊 5. Laporan & Rekapitulasi Eksekutif (Exportable)
+### 📊 6. Laporan & Rekapitulasi Eksekutif (Exportable)
 - 📈 Laporan Stok & Value Persediaan
 - 🔄 Laporan Pergerakan Stok
 - ⚠️ Laporan Produk Mendekati Kadaluarsa
@@ -41,11 +49,15 @@
 - ↩️ Laporan Retur Barang
 - ⚡ Laporan Fast & Slow Moving Items
 
-### 🔐 6. Otorisasi Granular & Scoping Lokasi (RBAC)
+### 🔐 7. Otorisasi Granular & Scoping Lokasi (RBAC)
 - Menggunakan `spatie/laravel-permission` untuk peran dinamis (*Super Admin, Owner, Kepala Gudang, Staff Gudang, Kepala Toko, Staff Toko*).
 - Pembatasan data berbasis lokasi (*Location-scoped Isolation*) untuk staf toko & gudang.
 
-### 🎨 7. Dark Mode & User Guide Interaktif
+### 🖼️ 8. Identitas Brand & Latar Belakang Login Dinamis
+- Logo Perusahaan & Favicon Tab Peramban berubah secara dinamis sesuai logo yang diunggah di menu *Profil Perusahaan*.
+- Pengunggahan Gambar Latar Belakang Login kustom (foto sawah, gudang, pertanian) dengan desain hero glassmorphic modern.
+
+### 🎨 9. Dark Mode & User Guide Interaktif
 - Tema **Dark / Light Mode** interaktif berbasis Tailwind CSS v4 dengan simpanan preferensi peramban.
 - Halaman **Panduan & SOP Sistem** bawaan yang menyajikan petunjuk peran akun, alur operasional barang, kamus modul, dan FAQ.
 
@@ -64,8 +76,8 @@
 
 ### 1. Clone Repository & Masuk ke Direktori
 ```bash
-git clone https://github.com/username/agro-inventory-system.git
-cd agro-inventory-system
+git clone https://github.com/AhmadSubadri/multi-location-inventory-system.git
+cd multi-location-inventory-system
 ```
 
 ### 2. Install Dependensi Backend (PHP) & Frontend (Node)
@@ -134,18 +146,21 @@ Password untuk seluruh akun demo di bawah ini adalah: **`password`**
 inventory-system/
 ├── app/
 │   ├── Http/Controllers/        # Controllers per modul (GoodsReceipt, StockTransfer, Sales, Reports, dll)
-│   ├── Http/Middleware/         # HandleInertiaRequests (Shared Props, Location Context)
+│   ├── Http/Middleware/         # HandleInertiaRequests (Shared Props, Location Context, App Version)
 │   ├── Models/                  # Eloquent Models (Product, ProductBatch, StockLedger, Location, User)
 │   └── Services/                # Single Source of Truth StockLedgerService
 ├── database/
-│   ├── migrations/              # 26 Database Migrations
+│   ├── migrations/              # 27 Database Migrations
 │   └── seeders/                 # Database Seeder (Roles, Locations, Users, Products, Batches)
+├── public/
+│   ├── manifest.json            # Dynamic PWA Manifest metadata
+│   └── sw.js                    # PWA Service Worker script
 ├── resources/
 │   ├── css/app.css              # Custom Tailwind CSS v4 design tokens & Dark Mode classes
 │   └── js/
 │       ├── Layouts/             # AuthenticatedLayout & GuestLayout
 │       └── Pages/               # Vue 3 Inertia Views (Auth, Dashboard, Master, Operations, Reports, UserGuide)
-├── routes/web.php               # Registered Application Web Routes
+├── routes/web.php               # Registered Application & PWA Manifest Routes
 └── README.md
 ```
 
@@ -153,4 +168,4 @@ inventory-system/
 
 ## 📄 Lisensi & Hak Cipta
 
-Dikembangkan untuk Perusahaan Distribusi & Retail Sarana Pertanian. Hak Cipta &copy; {{ 2026 }} All Rights Reserved. CV ASDEV Solusi Teknologi.
+Dikembangkan untuk Perusahaan Distribusi & Retail Sarana Pertanian. Hak Cipta &copy; 2026 All Rights Reserved. **ASDEV Digital Solution**.
